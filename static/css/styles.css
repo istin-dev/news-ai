@@ -1,0 +1,162 @@
+/* Custom Design System for TNPSC AI Hub */
+
+:root {
+    --primary-gradient: linear-gradient(135deg, #4f46e5 0%, #06b6d4 100%);
+    --purple-color: #a855f7;
+    --purple-light: #f3e8ff;
+    
+    /* Entity Highlighting Colors */
+    --scheme-color: #eab308; /* Yellow */
+    --org-color: #3b82f6;    /* Blue */
+    --place-color: #22c55e;  /* Green */
+    --person-color: #a855f7; /* Purple */
+    --number-color: #ef4444; /* Red */
+}
+
+/* Base resets & typography */
+body {
+    font-family: 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    letter-spacing: -0.01em;
+}
+
+/* Gradient text utility */
+.text-gradient {
+    background: var(--primary-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* Styled purple badge for person */
+.bg-purple {
+    background-color: var(--purple-color) !important;
+}
+
+/* Card hover animation effects */
+.news-card {
+    transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.25s ease;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    overflow: hidden;
+}
+
+.news-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 24px -10px rgba(0, 0, 0, 0.3);
+    border-color: rgba(99, 102, 241, 0.3);
+}
+
+/* Glassmorphism wrapper classes */
+.glass-panel {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+}
+
+[data-bs-theme="light"] .glass-panel {
+    background: rgba(0, 0, 0, 0.02);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+/* Entity colors styling */
+.entity-scheme {
+    background-color: rgba(234, 179, 8, 0.15) !important;
+    color: #facc15 !important;
+    border: 1px solid rgba(234, 179, 8, 0.3);
+}
+
+.entity-org {
+    background-color: rgba(59, 130, 246, 0.15) !important;
+    color: #60a5fa !important;
+    border: 1px solid rgba(59, 130, 246, 0.3);
+}
+
+.entity-place {
+    background-color: rgba(34, 197, 94, 0.15) !important;
+    color: #4ade80 !important;
+    border: 1px solid rgba(34, 197, 94, 0.3);
+}
+
+.entity-person {
+    background-color: rgba(168, 85, 247, 0.15) !important;
+    color: #c084fc !important;
+    border: 1px solid rgba(168, 85, 247, 0.3);
+}
+
+.entity-number {
+    background-color: rgba(239, 68, 68, 0.15) !important;
+    color: #fca5a5 !important;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+/* Entity Light Mode Badges overrides */
+[data-bs-theme="light"] .entity-scheme {
+    background-color: #fef08a !important;
+    color: #713f12 !important;
+}
+[data-bs-theme="light"] .entity-org {
+    background-color: #dbeafe !important;
+    color: #1e40af !important;
+}
+[data-bs-theme="light"] .entity-place {
+    background-color: #dcfce7 !important;
+    color: #166534 !important;
+}
+[data-bs-theme="light"] .entity-person {
+    background-color: #f3e8ff !important;
+    color: #6b21a8 !important;
+}
+[data-bs-theme="light"] .entity-number {
+    background-color: #fee2e2 !important;
+    color: #991b1b !important;
+}
+
+/* Bookmark Icon style */
+.bookmark-btn {
+    cursor: pointer;
+    transition: color 0.2s, transform 0.2s;
+}
+.bookmark-btn:hover {
+    transform: scale(1.15);
+}
+
+/* Page transitions / micro-animations */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+    animation: fadeIn 0.4s ease-out forwards;
+}
+
+/* Print CSS formatting for PDF downloads */
+@media print {
+    .navbar, footer, .btn, .bookmark-btn, .quiz-section, #themeToggler {
+        display: none !important;
+    }
+    body {
+        background: white !important;
+        color: black !important;
+        font-size: 12pt;
+    }
+    .container {
+        width: 100% !important;
+        max-width: 100% !important;
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+    .card {
+        border: none !important;
+        page-break-inside: avoid;
+    }
+    .entity-scheme, .entity-org, .entity-place, .entity-person, .entity-number {
+        background: transparent !important;
+        color: black !important;
+        border: 1px solid #ddd !important;
+        font-weight: bold;
+    }
+}

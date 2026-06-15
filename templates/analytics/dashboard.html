@@ -1,0 +1,203 @@
+{% extends 'base.html' %}
+
+{% block title %}Analytics Dashboard - TNPSC AI Hub{% endblock %}
+
+{% block content %}
+<div class="row mb-5 animate-fade-in">
+    <div class="col-12">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'news:index' %}" class="text-decoration-none">Home</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Analytics</li>
+            </ol>
+        </nav>
+        
+        <div class="p-4 bg-body-tertiary border border-secondary-subtle rounded-4">
+            <h1 class="display-6 fw-extrabold mb-1"><i class="bi bi-bar-chart-line text-primary"></i> Learning Analytics Dashboard</h1>
+            <p class="text-muted mb-0">Real-time usage and performance analytics representing current affairs reads, bookmarks, and MCQ accuracy.</p>
+        </div>
+    </div>
+</div>
+
+<!-- Stat Cards -->
+<div class="row mb-4 animate-fade-in">
+    <div class="col-6 col-md-3 mb-3">
+        <div class="card border shadow-sm rounded-3 h-100 p-3 text-center">
+            <div class="text-primary fs-3 mb-2"><i class="bi bi-eye"></i></div>
+            <h3 class="fw-bold mb-1">{{ total_views }}</h3>
+            <span class="text-muted small uppercase">Total Article Views</span>
+        </div>
+    </div>
+    
+    <div class="col-6 col-md-3 mb-3">
+        <div class="card border shadow-sm rounded-3 h-100 p-3 text-center">
+            <div class="text-success fs-3 mb-2"><i class="bi bi-controller"></i></div>
+            <h3 class="fw-bold mb-1">{{ total_quiz_attempts }}</h3>
+            <span class="text-muted small uppercase">Quiz Sessions</span>
+        </div>
+    </div>
+    
+    <div class="col-6 col-md-3 mb-3">
+        <div class="card border shadow-sm rounded-3 h-100 p-3 text-center">
+            <div class="text-warning fs-3 mb-2"><i class="bi bi-bookmark-star"></i></div>
+            <h3 class="fw-bold mb-1">{{ total_bookmarks }}</h3>
+            <span class="text-muted small uppercase">Active Bookmarks</span>
+        </div>
+    </div>
+    
+    <div class="col-6 col-md-3 mb-3">
+        <div class="card border shadow-sm rounded-3 h-100 p-3 text-center">
+            <div class="text-danger fs-3 mb-2"><i class="bi bi-percent"></i></div>
+            <h3 class="fw-bold mb-1">{{ avg_quiz_score_pct }}%</h3>
+            <span class="text-muted small uppercase">Average Quiz Score</span>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-4 animate-fade-in">
+    <!-- Chart Panel -->
+    <div class="col-lg-8 mb-4">
+        <div class="card shadow-sm border rounded-3 p-4">
+            <h5 class="fw-bold mb-3"><i class="bi bi-activity text-primary"></i> Engagement Activity (Last 7 Days)</h5>
+            <div style="height: 300px; position: relative;">
+                <canvas id="engagementChart"></canvas>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Category Distribution -->
+    <div class="col-lg-4 mb-4">
+        <div class="card shadow-sm border rounded-3 p-4 h-100">
+            <h5 class="fw-bold mb-3"><i class="bi bi-pie-chart text-success"></i> Category Density</h5>
+            <div class="table-responsive">
+                <table class="table table-borderless table-sm mb-0">
+                    <thead>
+                        <tr class="text-muted small uppercase">
+                            <th>Category</th>
+                            <th class="text-end">Articles Count</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for cat in category_counts %}
+                        <tr>
+                            <td><span class="badge bg-secondary rounded-pill me-2"></span> {{ cat.category }}</td>
+                            <td class="text-end fw-bold">{{ cat.count }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="2" class="text-center text-muted">No category data yet.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row animate-fade-in">
+    <!-- Top Viewed -->
+    <div class="col-md-6 mb-4">
+        <div class="card shadow-sm border rounded-3 p-4 h-100">
+            <h5 class="fw-bold mb-3"><i class="bi bi-fire text-danger"></i> Trending Articles</h5>
+            <div class="list-group list-group-flush">
+                {% for news in top_viewed_articles %}
+                    <a href="{% url 'news:detail' news.slug %}" class="list-group-item list-group-item-action bg-transparent border-0 px-0 py-2 d-flex justify-content-between align-items-center">
+                        <span class="text-truncate me-3 fw-medium" style="max-width: 80%;">{{ news.title }}</span>
+                        <span class="badge bg-danger-subtle text-danger rounded-pill">{{ news.total_views }} Views</span>
+                    </a>
+                {% empty %}
+                    <p class="text-muted small">No views tracked yet.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Top Bookmarked -->
+    <div class="col-md-6 mb-4">
+        <div class="card shadow-sm border rounded-3 p-4 h-100">
+            <h5 class="fw-bold mb-3"><i class="bi bi-award text-warning"></i> Highly Bookmarked References</h5>
+            <div class="list-group list-group-flush">
+                {% for news in top_bookmarked_articles %}
+                    <a href="{% url 'news:detail' news.slug %}" class="list-group-item list-group-item-action bg-transparent border-0 px-0 py-2 d-flex justify-content-between align-items-center">
+                        <span class="text-truncate me-3 fw-medium" style="max-width: 80%;">{{ news.title }}</span>
+                        <span class="badge bg-warning-subtle text-warning rounded-pill">{{ news.total_bookmarks }} Saves</span>
+                    </a>
+                {% empty %}
+                    <p class="text-muted small">No bookmarks recorded yet.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<!-- Include Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const ctx = document.getElementById('engagementChart').getContext('2d');
+        
+        // Parse Django arrays
+        const dates = {{ chart_dates|safe }};
+        const views = {{ chart_views|safe }};
+        const attempts = {{ chart_attempts|safe }};
+        
+        // Theme aware styling configuration
+        const theme = document.documentElement.getAttribute('data-bs-theme');
+        const gridColor = theme === 'dark' ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.05)';
+        const textColor = theme === 'dark' ? '#adb5bd' : '#495057';
+
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: dates,
+                datasets: [
+                    {
+                        label: 'Article Views',
+                        data: views,
+                        borderColor: '#4f46e5',
+                        backgroundColor: 'rgba(79, 70, 229, 0.08)',
+                        tension: 0.3,
+                        fill: true,
+                        borderWidth: 2
+                    },
+                    {
+                        label: 'Quiz Attempts',
+                        data: attempts,
+                        borderColor: '#10b981',
+                        backgroundColor: 'rgba(16, 185, 129, 0.08)',
+                        tension: 0.3,
+                        fill: true,
+                        borderWidth: 2
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        labels: {
+                            color: textColor,
+                            font: { family: 'Outfit' }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: { color: gridColor },
+                        ticks: { color: textColor, font: { family: 'Outfit' } }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        grid: { color: gridColor },
+                        ticks: { color: textColor, font: { family: 'Outfit' } }
+                    }
+                }
+            }
+        });
+    });
+</script>
+{% endblock %}

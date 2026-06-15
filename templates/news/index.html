@@ -1,0 +1,127 @@
+{% extends 'base.html' %}
+{% load news_tags %}
+{% load humanize %}
+
+{% block title %}Daily current affairs for TNPSC Group 2{% endblock %}
+
+{% block content %}
+<!-- Welcome Section -->
+<div class="row align-items-center mb-5 py-4 bg-body-tertiary rounded-4 px-4 border border-secondary-subtle">
+    <div class="col-lg-8">
+        <h1 class="display-5 fw-extrabold mb-2 text-gradient">TNPSC Group 2 Current Affairs</h1>
+        <p class="lead text-muted mb-0">Daily Current Affairs processed by Google Gemini AI specifically mapped for TNPSC Exam Syllabus.</p>
+    </div>
+    <div class="col-lg-4 text-lg-end mt-3 mt-lg-0">
+        <a href="{% url 'quiz:dashboard' %}" class="btn btn-primary btn-lg shadow-sm me-2">
+            <i class="bi bi-play-circle"></i> Start Practice Quiz
+        </a>
+    </div>
+</div>
+
+<!-- Category Quick Filter -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="d-flex flex-wrap gap-2 align-items-center">
+            <span class="fw-bold text-muted me-2 small uppercase"><i class="bi bi-funnel"></i> Quick Filter:</span>
+            <a href="{% url 'news:index' %}" class="btn btn-sm btn-outline-secondary rounded-pill {% if not category_name %}active{% endif %}">All</a>
+            {% for cat_val, cat_name in NEWS_CATEGORIES %}
+                <a href="{% url 'news:category' cat_val %}" class="btn btn-sm btn-outline-secondary rounded-pill {% if category_name == cat_val %}active{% endif %}">
+                    {{ cat_name }}
+                </a>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<!-- Articles Grid -->
+<div class="row">
+    {% if news_list %}
+        {% for news in news_list %}
+            <div class="col-md-6 col-lg-4 mb-4 animate-fade-in">
+                <div class="card h-100 news-card shadow-sm rounded-3">
+                    <div class="card-body d-flex flex-column p-4">
+                        <!-- Card Header -->
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <span class="badge rounded-pill {% if news.category == 'Polity' %}bg-warning text-dark
+                                           {% elif news.category == 'Economy' %}bg-primary
+                                           {% elif news.category == 'Science' %}bg-info text-dark
+                                           {% elif news.category == 'International' %}bg-success
+                                           {% elif news.category == 'Environment' %}bg-secondary
+                                           {% elif news.category == 'Awards' %}bg-purple
+                                           {% elif news.category == 'Sports' %}bg-danger
+                                           {% elif news.category == 'Tamil Nadu' %}bg-dark text-white
+                                           {% else %}bg-secondary{% endif %}">
+                                {{ news.get_category_display }}
+                            </span>
+                            
+                            <!-- Bookmark trigger -->
+                            <span class="bookmark-btn" data-news-id="{{ news.id }}">
+                                <i class="bi {% if news.id in bookmarked_ids %}bi-bookmark-fill text-warning{% else %}bi-bookmark text-muted{% endif %} fs-5"></i>
+                            </span>
+                        </div>
+                        
+                        <!-- Title -->
+                        <h5 class="card-title fw-bold mb-3">
+                            <a href="{% url 'news:detail' news.slug %}" class="text-decoration-none text-reset hover-primary">
+                                {{ news.title }}
+                            </a>
+                        </h5>
+                        
+                        <!-- AI 2-line summary with highlighted entities -->
+                        <p class="card-text text-muted flex-grow-1 small">
+                            {{ news.summary|highlight_entities:news.highlighted_entities }}
+                        </p>
+                        
+                        <!-- Card Footer -->
+                        <div class="border-top pt-3 mt-3 d-flex justify-content-between align-items-center text-muted small">
+                            <span><i class="bi bi-globe me-1"></i> {{ news.source }}</span>
+                            <span><i class="bi bi-calendar-event me-1"></i> {{ news.published_date|date:"M d, Y" }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <div class="col-12 text-center py-5">
+            <i class="bi bi-file-earmark-x text-muted display-1"></i>
+            <h3 class="mt-3">No News Found</h3>
+            <p class="text-muted">Wait for daily 6:00 AM RSS feeds automated fetching or contact admin.</p>
+        </div>
+    {% endif %}
+</div>
+
+<!-- Pagination -->
+{% if is_paginated %}
+    <nav class="d-flex justify-content-center mt-5" aria-label="Page navigation">
+        <ul class="pagination pagination-md shadow-sm">
+            {% if page_obj.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+            {% else %}
+                <li class="page-item disabled"><span class="page-link">&laquo;</span></li>
+            {% endif %}
+            
+            {% for i in paginator.page_range %}
+                {% if page_obj.number == i %}
+                    <li class="page-item active" aria-current="page"><span class="page-link">{{ i }}</span></li>
+                {% else %}
+                    <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+                {% endif %}
+            {% endfor %}
+            
+            {% if page_obj.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            {% else %}
+                <li class="page-item disabled"><span class="page-link">&raquo;</span></li>
+            {% endif %}
+        </ul>
+    </nav>
+{% endif %}
+{% endblock %}

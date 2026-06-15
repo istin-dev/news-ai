@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>TNPSC Group 2 Weekly Current Affairs Report - {{ report_date }}</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&display=swap');
+        
+        body {
+            font-family: 'Outfit', sans-serif;
+            color: #333;
+            line-height: 1.6;
+            margin: 0;
+            padding: 30px;
+            background: #fff;
+        }
+        
+        .header {
+            border-bottom: 3px solid #4f46e5;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            color: #4f46e5;
+            margin: 0 0 10px 0;
+            font-size: 24pt;
+            font-weight: 700;
+        }
+
+        .header p {
+            color: #666;
+            margin: 0;
+            font-size: 11pt;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .meta-info {
+            text-align: right;
+            font-size: 10pt;
+            color: #777;
+            margin-bottom: 20px;
+        }
+
+        .no-print-warning {
+            background-color: #fee2e2;
+            border: 1px solid #fca5a5;
+            color: #991b1b;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 25px;
+            text-align: center;
+            font-size: 10.5pt;
+        }
+
+        .article {
+            margin-bottom: 40px;
+            page-break-inside: avoid;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 35px;
+        }
+
+        .article-title {
+            color: #111827;
+            font-size: 16pt;
+            font-weight: 600;
+            margin: 0 0 10px 0;
+        }
+
+        .article-meta {
+            font-size: 9.5pt;
+            color: #6b7280;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .article-meta span {
+            margin-right: 15px;
+            background: #f3f4f6;
+            padding: 2px 8px;
+            border-radius: 4px;
+        }
+
+        .section-title {
+            color: #4f46e5;
+            font-size: 11pt;
+            text-transform: uppercase;
+            margin: 15px 0 8px 0;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        .summary {
+            background-color: #fafafa;
+            border-left: 4px solid #4f46e5;
+            padding: 12px 15px;
+            margin-bottom: 15px;
+            font-style: italic;
+        }
+
+        .revision-notes {
+            margin: 0 0 20px 0;
+            padding-left: 20px;
+            color: #4b5563;
+        }
+
+        .revision-notes li {
+            margin-bottom: 5px;
+        }
+
+        .mcq-box {
+            border: 1px dashed #cbd5e1;
+            background-color: #f8fafc;
+            padding: 15px;
+            border-radius: 6px;
+        }
+
+        .mcq-question {
+            font-weight: 600;
+            margin: 0 0 10px 0;
+            color: #0f172a;
+        }
+
+        .mcq-options {
+            margin: 0 0 10px 0;
+            padding-left: 20px;
+            list-style-type: upper-alpha;
+        }
+
+        .mcq-options li {
+            margin-bottom: 4px;
+        }
+
+        .mcq-answer {
+            font-weight: 600;
+            color: #166534;
+        }
+
+        .mcq-explanation {
+            font-size: 9.5pt;
+            color: #475569;
+            margin-top: 5px;
+        }
+
+        .btn-print {
+            background-color: #4f46e5;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            font-size: 11pt;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            font-weight: 600;
+        }
+        
+        .btn-print:hover {
+            background-color: #4338ca;
+        }
+
+        .actions-bar {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        @media print {
+            .actions-bar, .no-print-warning {
+                display: none !important;
+            }
+            body {
+                padding: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>TNPSC WEEKLY CURRENT AFFAIRS</h1>
+        <p>AI-Powered Revision & Practice Report</p>
+    </div>
+
+    <div class="meta-info">
+        Report Generated: <strong>{{ report_date }}</strong>
+    </div>
+
+    {% if not is_pdf %}
+        <!-- Display warning and instructions only in browser print view -->
+        {% if messages %}
+            {% for message in messages %}
+                <div class="no-print-warning">
+                    <strong>Notice:</strong> {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <div class="actions-bar">
+            <button onclick="window.print()" class="btn-print">
+                <i class="bi bi-printer"></i> Click to Print / Save as PDF
+            </button>
+            <a href="{% url 'news:index' %}" class="btn-print" style="background-color: #6b7280; margin-left: 10px;">Back to Website</a>
+        </div>
+    {% endif %}
+
+    {% for news in news_list %}
+        <div class="article">
+            <h2 class="article-title">{{ forloop.counter }}. {{ news.title }}</h2>
+            <div class="article-meta">
+                <span>Category: {{ news.get_category_display }}</span>
+                <span>Source: {{ news.source }}</span>
+                <span>Date: {{ news.published_date }}</span>
+            </div>
+
+            <div class="section-title">Exam-Focused Summary</div>
+            <div class="summary">
+                {{ news.summary }}
+            </div>
+
+            {% if news.revision_notes %}
+                <div class="section-title">Quick Revision Notes</div>
+                <ul class="revision-notes">
+                    {% for note in news.revision_notes.splitlines %}
+                        {% if note.strip %}
+                            <li>{{ note|cut:"•" }}</li>
+                        {% endif %}
+                    {% endfor %}
+                </ul>
+            {% endif %}
+
+            {% if news.mcq_question %}
+                <div class="section-title">Practice MCQ Question</div>
+                <div class="mcq-box">
+                    <p class="mcq-question">{{ news.mcq_question }}</p>
+                    <ol class="mcq-options">
+                        {% for opt_key, opt_val in news.mcq_options.items %}
+                            <li>{{ opt_val }}</li>
+                        {% endfor %}
+                    </ol>
+                    <div class="mcq-answer">Correct Answer: {{ news.mcq_answer }}</div>
+                    <div class="mcq-explanation">
+                        <strong>Explanation:</strong> {{ news.mcq_explanation }}
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    {% empty %}
+        <p style="text-align: center; color: #777;">No articles found for the weekly range.</p>
+    {% endfor %}
+
+</body>
+</html>

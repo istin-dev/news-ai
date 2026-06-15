@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block title %}Practice MCQ Quiz - TNPSC Group 2 Prep{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center py-4">
+    <div class="col-md-8 col-lg-6">
+        
+        <!-- Quiz Setup Card -->
+        <div id="quizSetup" class="card shadow border-0 rounded-4 p-4 p-md-5 animate-fade-in">
+            <div class="text-center mb-4">
+                <div class="p-3 bg-primary-subtle d-inline-block rounded-circle mb-3">
+                    <i class="bi bi-journal-check text-primary display-4"></i>
+                </div>
+                <h2 class="fw-bold">TNPSC Practice MCQ Quiz</h2>
+                <p class="text-muted">Test your daily current affairs knowledge with dynamic AI-generated MCQs matching the TNPSC Group 2 Syllabus.</p>
+            </div>
+            
+            <div class="mb-4 text-center border-top border-bottom py-3">
+                <span class="text-muted small uppercase">Total Available MCQs: <strong>{{ total_mcqs }}</strong></span>
+            </div>
+
+            <!-- Quiz Settings Form -->
+            <div class="mb-3">
+                <label for="quizCategory" class="form-label fw-bold">Select Category</label>
+                <select class="form-select" id="quizCategory">
+                    <option value="All" selected>All Categories (Mixed Bag)</option>
+                    {% for cat_val, cat_name in NEWS_CATEGORIES %}
+                        {% with count=category_counts|dictsort:"0" %}
+                        <!-- We fetch individual category count from custom loop or just render the category names -->
+                        <option value="{{ cat_val }}">{{ cat_name }}</option>
+                        {% endwith %}
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="mb-4">
+                <label for="quizCount" class="form-label fw-bold">Number of Questions</label>
+                <select class="form-select" id="quizCount">
+                    <option value="5">5 Questions (Quick Check)</option>
+                    <option value="10" selected>10 Questions (Standard Test)</option>
+                    <option value="20">20 Questions (Mega Revision)</option>
+                </select>
+            </div>
+
+            <button id="startQuizBtn" class="btn btn-primary w-100 btn-lg shadow-sm">
+                <i class="bi bi-play-fill"></i> Start Quiz Session
+            </button>
+        </div>
+
+        <!-- Quiz Playing Container (managed dynamically by app.js) -->
+        <div id="quizPlay" class="d-none"></div>
+
+    </div>
+</div>
+{% endblock %}
